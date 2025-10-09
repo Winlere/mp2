@@ -1,0 +1,192 @@
+/* Root + light/dark tokens */
+:root {
+  --bg: #0b0f17;
+  --card: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --text: #e8edf3;
+  --muted: #a6b1c2;
+  --accent: #59a9ff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f9fc;
+    --card: #ffffff;
+    --card-border: rgba(17, 24, 39, 0.08);
+    --text: #0f172a;
+    --muted: #475569;
+    --accent: #2563eb;
+    --shadow: 0 10px 24px rgba(2, 6, 23, 0.08);
+  }
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  margin: 0;
+  padding: 0;
+}
+
+/* Basic page spacing */
+#root,
+body > div {
+  padding: 1rem;
+}
+
+/* Card layout */
+.movie-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.6rem;
+  width: min(100%, 320px);
+  padding: 0.9rem;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  backdrop-filter: saturate(140%) blur(6px);
+  transition: transform 180ms ease, box-shadow 180ms ease,
+    border-color 180ms ease;
+  overflow: hidden;
+}
+
+/* Allow wrapping cards even without a container class */
+.movie-card {
+  display: inline-grid;
+  vertical-align: top;
+  margin: 0.75rem;
+}
+
+.movie-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+  border-color: var(--accent);
+}
+
+/* Title */
+.movie-card h3 {
+  margin: 0.2rem 0 0.1rem;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+}
+
+/* Meta text */
+.movie-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* Keep overview concise */
+.movie-card p:nth-of-type(1) {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Release date + rating row (uses simple spacing) */
+.movie-card p:nth-of-type(2),
+.movie-card p:nth-of-type(3) {
+  font-size: 0.82rem;
+}
+
+/* Genres line */
+.movie-card p:nth-of-type(4) {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* Poster */
+.movie-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Button */
+.movie-card button {
+  margin-top: 0.2rem;
+  height: 40px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.02)
+  );
+  color: var(--text);
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease,
+    transform 120ms ease;
+}
+
+.movie-card button:hover {
+  border-color: var(--accent);
+  background: linear-gradient(
+    180deg,
+    rgba(89, 169, 255, 0.16),
+    rgba(89, 169, 255, 0.08)
+  );
+}
+
+.movie-card button:active {
+  transform: translateY(1px);
+}
+
+/* Inputs + small controls (optional, since you have SearchBar/RankByBar) */
+input[type="text"] {
+  width: min(100%, 460px);
+  height: 42px;
+  padding: 0 12px;
+  margin: 0.5rem 0.5rem 1rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+input[type="text"]::placeholder {
+  color: var(--muted);
+}
+
+input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+/* RankBy buttons */
+button {
+  background: var(--card);
+  color: var(--text);
+}
+
+button + button {
+  margin-left: 0.5rem;
+}
+
+/* Responsive tweak for very small widths */
+@media (max-width: 420px) {
+  .movie-card {
+    width: 100%;
+    margin: 0.6rem 0;
+    padding: 0.8rem;
+  }
+  .movie-card h3 {
+    font-size: 1rem;
+  }
+}
