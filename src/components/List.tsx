@@ -75,6 +75,15 @@ function RankByBar({ setRankby }: { setRankby: (rankby: string) => void }) {
   );
 }
 
+function SortBar({ setSort }: { setSort: (sort: string) => void }) {
+  return (
+    <div>
+      <button onClick={() => setSort("asc")}>Asc</button>
+      <button onClick={() => setSort("desc")}>Desc</button>
+    </div>
+  );
+}
+
 function List() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genreslist, setGenreslist] = useState<{ [key: number]: string }>({});
@@ -145,15 +154,26 @@ function List() {
     }
   };
 
+  // asc or desc functor
+  const ascOrDescFunctor = (Movies: Movie[]) => {
+    if (sort === "asc") {
+      return Movies.reverse();
+    } else {
+      return Movies;
+    }
+  };
   // render
   return (
     <div>
       <SearchBar setSearch={setSearch} />
       <RankByBar setRankby={setRankby} />
+      <SortBar setSort={setSort} />
       <MovieList
-        movies={movies
-          .filter((movie) => movie.title.includes(search))
-          .sort(rankbyFunctor as (a: Movie, b: Movie) => number)}
+        movies={ascOrDescFunctor(
+          movies
+            .filter((movie) => movie.title.includes(search))
+            .sort(rankbyFunctor as (a: Movie, b: Movie) => number)
+        )}
       />
     </div>
   );
