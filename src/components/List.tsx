@@ -1,33 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import dbApi from "../Api";
+import { Movie, useMovieData } from "./Data";
 import "./List.css";
-
-interface Movie {
-  id: number;
-  title: string;
-  release_date: string;
-  vote_average: number;
-  overview: string;
-  poster_path: string;
-  genre_ids: number[];
-  genres: string[];
-}
 
 function translateRateToStars(rate: number) {
   if (rate >= 8.25) {
     return "★★★★★";
   } else if (rate >= 8) {
-    return "★★★★♡";
+    return "★★★★☆";
   } else if (rate >= 7.5) {
-    return "★★★♡";
-  } else return "★★♡";
+    return "★★★★";
+  } else return "★★★☆";
 }
 
 function MovieCard({ movie }: { movie: Movie }) {
   const navigate = useNavigate();
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => navigate(`/detail/${movie.id}`)}>
       <h3>{movie.title}</h3>
       <p>{movie.overview}</p>
       <p>{movie.release_date}</p>
@@ -36,9 +25,6 @@ function MovieCard({ movie }: { movie: Movie }) {
       </p>
       <p>{movie.genres.join(", ")}</p>
       <img src={movie.poster_path} alt={movie.title} />
-      <button onClick={() => navigate(`/detail/${movie.id}`)}>
-        View Details
-      </button>
     </div>
   );
 }
@@ -85,8 +71,7 @@ function SortBar({ setSort }: { setSort: (sort: string) => void }) {
 }
 
 function List() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [genreslist, setGenreslist] = useState<{ [key: number]: string }>({});
+  const { movies, loading } = useMovieData();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("desc");
   const [rankby, setRankby] = useState("title");
@@ -96,50 +81,8 @@ function List() {
     setRankby("vote_average");
   }, []);
 
-  // fetch genres
-  useEffect(() => {
-    dbApi.get("/genre/movie/list").then((res) => {
-      const genreMap = res.data.genres.reduce((acc: any, genre: any) => {
-        acc[genre.id] = genre.name;
-        return acc;
-      }, {});
-      setGenreslist(genreMap);
-    });
-  }, []);
-
-  // fetch movies
-  useEffect(() => {
-    const pages = Array.from({ length: 10 }, (_, idx) => idx + 1);
-    Promise.all(
-      pages.map((i) =>
-        dbApi.get("/discover/movie", {
-          params: {
-            language: "en-US",
-            page: i,
-            sort_by: "vote_average.desc",
-            "vote_count.gte": 1000,
-            // OR query: Drama (18) OR Animation (16)
-            with_genres: "18|16", // Axios will URL-encode the pipe
-            // tip: you can also add include_adult: false if needed
-          },
-        })
-      )
-    ).then((responses) => {
-      const merged = responses.flatMap((res) =>
-        res.data.results.map((m: Movie) => ({
-          ...m,
-          poster_path: `https://image.tmdb.org/t/p/w500/${m.poster_path}`,
-          genres: m.genre_ids.map((genre_id: number) => genreslist[genre_id]),
-        }))
-      );
-      // optional: de-dup by id in case pages overlap
-      const dedup = Array.from(new Map(merged.map((m) => [m.id, m])).values());
-      setMovies(dedup);
-    });
-  }, [genreslist]);
-
   // loading
-  if (movies.length === 0) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 

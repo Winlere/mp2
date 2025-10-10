@@ -1,0 +1,32 @@
+/* Reviews: simple vertical stack */
+.reviews {
+  display: block; /* no grid, no flex */
+  margin: 0;
+  padding: 0;
+}
+
+.review-card {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+}
+
+/* space between cards */
+.review-card + .review-card {
+  margin-top: 10px;
+}
+
+/* keep existing typography */
+.review-author {
+  margin: 0 0 6px 0;
+  font-weight: 600;
+}
+
+.review-content {
+  margin: 0;
+  white-space: pre-wrap;
+  color: #374151;
+  font-size: 0.95rem;
+}
