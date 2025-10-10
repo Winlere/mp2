@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useReviews, Review, useMovieData } from "./Data";
-import dbApi from "../Api";
 
 function ReviewCard({ review }: { review: Review }) {
   return (
